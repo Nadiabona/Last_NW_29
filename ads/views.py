@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 
 import ads
 from ads.models import Category, Ads
-from ads.serializers import AdsSerializer
+from ads.serializers import AdsSerializer, AdsDetailSerializer, AdsListSerializer
 
 
 # def ok(request):
@@ -94,8 +94,40 @@ class CategoryDeleteView(generic.DeleteView):
 #
 #         return JsonResponse(response, safe=False)
 class AdsViewSet(ModelViewSet):
-    serializer_class = AdsSerializer
+    default_serizalizer = AdsSerializer
     queryset = Ads.objects.order_by('-price')
+    serializers = {'retrieve': AdsDetailSerializer,
+                   'list': AdsListSerializer
+                   }
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.default_serizalizer)
+
+
+    def list(self, request, *args, **kwargs):
+        categories = request.GET.getlist('cat')
+        if categories:
+            self.queryset = self.queryset.filter(category_id__in=categories)  #переопределяем queryset
+
+        text = request.GET.get('text')
+        if text:
+            self.queryset = self.queryset.filter(name__icontains=text)  #переопределяем queryset
+
+        location = request.GET.get('location')
+        if location:
+            self.queryset = self.queryset.filter(author_id__location__name__icontains=location)  # переопределяем queryset
+
+        price_from = request.GET.get('price_from')
+        if price_from:
+            self.queryset = self.queryset.filter(price__gte=price_from)  # переопределяем queryset
+
+        price_to = request.GET.get('price_to')
+        if price_to:
+            self.queryset = self.queryset.filter(price__lte=price_to)  # переопределяем queryset
+
+        return super().list(request, *args, **kwargs)
+
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdsCreateView(generic.CreateView):
