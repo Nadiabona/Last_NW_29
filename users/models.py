@@ -27,4 +27,4 @@ class User(models.Model):
     password = models.CharField(max_length=200)
     role = models.CharField(max_length=200, choices = Roles.choices)
     age = models.PositiveIntegerField()
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
+    location = models.ManyToManyField(Location)

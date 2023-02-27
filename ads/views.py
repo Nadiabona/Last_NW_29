@@ -7,9 +7,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import generic
 from django.conf import settings
+from rest_framework.viewsets import ModelViewSet
 
 import ads
 from ads.models import Category, Ads
+from ads.serializers import AdsSerializer
 
 
 # def ok(request):
@@ -70,6 +72,30 @@ class CategoryDeleteView(generic.DeleteView):
     def delete(self, request, *args, **kwargs):
         super().delete(request, *args, **kwargs)
         return JsonResponse({"status": "ok"}, status=200)
+
+# class AdsListView(generic.ListView):
+#     model = Ads
+#     queryset = Ads.objects.all()
+#
+#     def get(self, request, *args, **kwargs):
+#         super().get(request, *args, **kwargs)
+#
+#         self.object_list.select_related('author_id').order_by('-price')
+#         paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
+#         page_number = request.GET.get('page')
+#         page_obj = paginator.get_page(page_number)
+#         ads = serialize(Ads, page_obj)
+#
+#         response = {
+#             'items': ads,
+#             'num_pages': page_obj.paginator.num_pages,
+#             'total': page_obj.paginator.count,
+#         }
+#
+#         return JsonResponse(response, safe=False)
+class AdsViewSet(ModelViewSet):
+    serializer_class = AdsSerializer
+    queryset = Ads.objects.order_by('-price')
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdsCreateView(generic.CreateView):
@@ -164,23 +190,4 @@ def serialize(model, values):  # model:<class 'ads.models.Category>' values:Clas
 
 
 
-class AdsListView(generic.ListView):
-    model = Ads
-    queryset = Ads.objects.all()
 
-    def get(self, request, *args, **kwargs):
-        super().get(request, *args, **kwargs)
-
-        self.object_list.select_related('author_id').order_by('-price')
-        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        ads = serialize(Ads, page_obj)
-
-        response = {
-            'items': ads,
-            'num_pages': page_obj.paginator.num_pages,
-            'total': page_obj.paginator.count
-        }
-
-        return JsonResponse(response, safe=False)
