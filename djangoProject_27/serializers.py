@@ -1,4 +1,4 @@
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import SerializerMethodField, IntegerField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -11,11 +11,14 @@ class UserSerializer(ModelSerializer):
         exclude = ['password']
 
 class UserListSerializer(ModelSerializer):
-    total_ads = SerializerMethodField()
+    total_ads = IntegerField()
 
-    def get_total_ads(self, user): #обязательно, чтобы функция содержала get, нижнее подчеркивание, название поля
+    #вариант старый - хуже
+    #total_ads = SerializerMethodField()
+
+    #def get_total_ads(self, user): #обязательно, чтобы функция содержала get, нижнее подчеркивание, название поля
     #принимает объект из базы, то есть кому мы добавляем поле
-        return user.ads_set.filter(is_published = True).count()
+        #return user.ads_set.filter(is_published = True).count()
     #ads_set - это обратное обращение к моделям
 
     class Meta:
@@ -30,7 +33,6 @@ class UserDetailSerializer(ModelSerializer):
         exclude = ['password']
 
 class LocationSerializer(ModelSerializer):
-
     class Meta:
         model = Location
         fields = "__all__"

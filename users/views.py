@@ -1,3 +1,4 @@
+from django.db.models import Count, Q
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
@@ -26,7 +27,8 @@ class UserDeleteView(DestroyAPIView):
 
 class UserListView(ListAPIView):
     serializer_class = UserListSerializer
-    queryset = User.objects.all().order_by("username")
+    queryset = User.objects.annotate(total_ads =Count("ads", filter = Q(ads__is_published=True))).order_by() #аннотация - это поле будет добавляться в queryset из запроса
+    #queryset = User.objects.all().order_by("username") - это для худшегь варианта подсчета исла заявлений
     pagination_class = UserPagination
 
 class UserUpdateView(UpdateAPIView):
@@ -34,5 +36,5 @@ class UserUpdateView(UpdateAPIView):
     queryset = User.objects.all()
 
 class LocationViewSet(ModelViewSet):
-    serializer_class = ...
-    queryset = Ads.objects.order_by('-price')
+    serializer_class = LocationSerializer
+    queryset = Location.objects.all()
