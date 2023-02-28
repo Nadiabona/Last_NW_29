@@ -39,7 +39,10 @@ def convert_file(csv_file, json_file, model):
 
             if model == USER_MODEL:
                 row['age'] = int(row['age'])
-                row['location_id'] = int(row['location_id'])
+                row['location'] = [int(row['location_id'])]
+                del row['location_id']
+
+
 
             record['fields']=row
 
@@ -48,8 +51,8 @@ def convert_file(csv_file, json_file, model):
     with open(json_file, 'w', encoding='utf-8') as json_f:
         json_f.write(json.dumps(result, ensure_ascii = False))
 
-convert_file('location.csv', LOCATIONS_JSON_FILE_NAME, LOCATION_MODEL)
+# convert_file('location.csv', LOCATIONS_JSON_FILE_NAME, LOCATION_MODEL)
 convert_file('user.csv', USERS_JSON_FILE_NAME, USER_MODEL)
-convert_file('category.csv', CATEGORIES_JSON_FILE_NAME, CATEGORIES_MODEL) #пока модели нет, но надо указывать с приставкой приложения
-convert_file('ad.csv', ADS_JSON_FILE_NAME, ADS_MODEL)
+# convert_file('category.csv', CATEGORIES_JSON_FILE_NAME, CATEGORIES_MODEL) #пока модели нет, но надо указывать с приставкой приложения
+# convert_file('ad.csv', ADS_JSON_FILE_NAME, ADS_MODEL)
 

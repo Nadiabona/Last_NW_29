@@ -26,7 +26,7 @@ class UserListSerializer(ModelSerializer):
         fields = ['username', 'total_ads']
 
 class UserDetailSerializer(ModelSerializer):
-    location = SlugRelatedField(queryset=Location.objects.all(), slug_field = "name") #мз всех локаций выбараем соответствующую локацию и выводим name локации
+    location = SlugRelatedField(queryset=Location.objects.all(), slug_field = "name", many=True) #мз всех локаций выбараем соответствующую локацию и выводим name локации
 
     class Meta:
         model = User

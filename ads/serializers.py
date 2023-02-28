@@ -27,7 +27,7 @@ class AdsListSerializer(ModelSerializer):
     category_id = SlugRelatedField(slug_field="name", queryset=Category.objects.all())
     address = SerializerMethodField()
     def get_address(self, ads):
-        return ads.author_id.location.name
+        return [loc.name for loc in ads.author_id.location.all()]
 
     class Meta:
         model = Ads
