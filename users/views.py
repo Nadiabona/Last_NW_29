@@ -1,10 +1,12 @@
 from django.db.models import Count, Q
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Ads
-from djangoProject_27.serializers import UserSerializer, UserListSerializer, UserDetailSerializer, LocationSerializer
+from djangoProject_27.serializers import UserSerializer, UserListSerializer, UserDetailSerializer, LocationSerializer, \
+    UserCreateSerializer
 from users.models import User, Location
 
 
@@ -14,12 +16,13 @@ class UserPagination(PageNumberPagination):
 
 
 class UserCreateView(CreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserCreateSerializer
     queryset = User.objects.all()
 
 class UserDetailView(RetrieveAPIView):
     serializer_class = UserDetailSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
 
 class UserDeleteView(DestroyAPIView):
     serializer_class = UserSerializer

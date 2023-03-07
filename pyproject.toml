@@ -10,6 +10,7 @@ packages = [{include = "djangoproject_28"}]
 python = "^3.9"
 psycopg2 = "^2.9.5"
 djangorestframework = "^3.14.0"
+djangorestframework-simplejwt = "^5.2.2"
 
 
 [build-system]
