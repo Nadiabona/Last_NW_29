@@ -14,7 +14,7 @@ import ads
 from ads.models import Category, Ads, Selection
 from ads.permissions import IsOwner, IsStaff
 from ads.serializers import AdsSerializer, AdsDetailSerializer, AdsListSerializer, SelectionSerializer, \
-    SelectionCreateSerializer
+    SelectionCreateSerializer, CategorySerizalizer
 
 
 # def ok(request):
@@ -41,30 +41,30 @@ class CategoryDetailView(generic.DetailView):
         res = serialize(Category, category)
         return JsonResponse(res, safe=False)
 
-@method_decorator(csrf_exempt, name='dispatch')
-class CategoryCreateView(generic.CreateView):
-    model = Category
-    fields = ['name']
-
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        category = Category.objects.create(**data)
-        result = serialize(Category, category)
-        return JsonResponse(result, safe=False)
-
-
-@method_decorator(csrf_exempt, name='dispatch')
-class CategoryUpdateView(generic.UpdateView):
-    model = Category
-    fields = ['name']
-
-    def patch(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        category = Category.objects.get(id=kwargs['pk'])
-        category.name = data['name']
-        category.save()
-        result = serialize(Category, category)
-        return JsonResponse(result, safe=False)
+# @method_decorator(csrf_exempt, name='dispatch')
+# class CategoryCreateView(generic.CreateView):
+#     model = Category
+#     fields = ['name']
+#
+#     def post(self, request, *args, **kwargs):
+#         data = json.loads(request.body)
+#         category = Category.objects.create(**data)
+#         result = serialize(Category, category)
+#         return JsonResponse(result, safe=False)
+#
+#
+# @method_decorator(csrf_exempt, name='dispatch')
+# class CategoryUpdateView(generic.UpdateView):
+#     model = Category
+#     fields = ['name']
+#
+#     def patch(self, request, *args, **kwargs):
+#         data = json.loads(request.body)
+#         category = Category.objects.get(id=kwargs['pk'])
+#         category.name = data['name']
+#         category.save()
+#         result = serialize(Category, category)
+#         return JsonResponse(result, safe=False)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -160,10 +160,6 @@ class SelectionViewSet(ModelViewSet):
 
 
 
-
-
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 class AdsCreateView(generic.CreateView):
     model = Ads
@@ -212,10 +208,14 @@ class AdsDetailView(generic.DetailView):
         try:
             ads = Ads.objects.get(pk=kwargs['pk'])
         except Ads.DoesNotExist as e:
-            return JsonResponse({'detail': e.args[0]}, status=400)
+            return JsonResponse({'detail': e.args[0]}, status=404)
 
         res = serialize(Ads, ads)
         return JsonResponse(res, safe=False)
+
+class CatViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerizalizer
 
 
 @method_decorator(csrf_exempt, name='dispatch')

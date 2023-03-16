@@ -1,12 +1,15 @@
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import SerializerMethodField, BooleanField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from ads.models import Ads, Category, Selection
+from ads.validators import not_true
 from users.models import User
 
 
 class AdsSerializer(ModelSerializer):
+    #добавляем сериализатор на поле is_published
+    is_published = BooleanField(validators = [not_true], required= False)#чтобы можно было создавать ез поля is_published
     class Meta:
         model = Ads
         fields = "__all__"
@@ -52,5 +55,9 @@ class SelectionCreateSerializer(ModelSerializer):
         model = Selection
         fields = "__all__"
 
+class CategorySerizalizer(ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
 
 
