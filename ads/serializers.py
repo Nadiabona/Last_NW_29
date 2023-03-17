@@ -47,7 +47,7 @@ class SelectionCreateSerializer(ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
-        validated_data["owner"] =request.user_id
+        validated_data["owner"] =request.username
         return super().create(validated_data)
 
 

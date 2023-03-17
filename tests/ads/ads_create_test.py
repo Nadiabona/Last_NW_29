@@ -5,8 +5,8 @@ from rest_framework import status
 @pytest.mark.django_db
 def test_ads_create(client, user, category, access_token):
     data = {
-        "author": user.pk,
-        "category": category.pk,
+        "author_id": user.pk,
+        "category_id": category.pk,
         "name": "tableVeryGood",
         "price": 200
     }
